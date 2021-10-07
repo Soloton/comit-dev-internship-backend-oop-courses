@@ -1,0 +1,17 @@
+{
+    "name": "comit-dev-internship-backend-oop-courses",
+    "version": "1.0.0",
+    "description": "Модель учебного курса. Курс предполагает набор тем, в каждой теме несколько вопросов, на каждый вопрос несколько ответов (правильных и неправильных).",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Soloton/comit-dev-internship-backend-oop-courses.git"
+    },
+    "bugs": {
+        "url": "https://github.com/Soloton/comit-dev-internship-backend-oop-courses/issues"
+    },
+    "homepage": "https://github.com/Soloton/comit-dev-internship-backend-oop-courses#readme",
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}
