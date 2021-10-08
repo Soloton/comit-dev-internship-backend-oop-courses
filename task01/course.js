@@ -1,10 +1,7 @@
 import { Topic } from "./topic.js";
 
 export class Course extends Topic {
-  constructor(text) {
-    super(text);
-    this.topics = new Set();
-  }
+  topics = new Set();
 
   add(topic) {
     if (this.topics === undefined) {

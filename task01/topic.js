@@ -1,10 +1,7 @@
 import { Base } from "./base.js";
 
 export class Topic extends Base {
-  constructor(text) {
-    super(text);
-    this.answers = [];
-  }
+  answers = [];
 
   add(answer) {
     if (this.answers === undefined) {
