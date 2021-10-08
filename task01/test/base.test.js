@@ -1,6 +1,6 @@
-import {should} from "chai";
-import {check, gen, install} from "mocha-testcheck";
-import {Base} from "../base.js";
+import { should } from "chai";
+import { check, gen, install } from "mocha-testcheck";
+import { Base } from "../base.js";
 
 install();
 should();

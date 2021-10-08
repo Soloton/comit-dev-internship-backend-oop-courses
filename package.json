@@ -1,10 +1,10 @@
 {
     "name": "comit-dev-internship-backend-oop-courses",
     "version": "1.0.0",
-    "description": "Модель учебного курса. Курс предполагает набор тем, в каждой теме несколько вопросов, на каждый вопрос несколько ответов (правильных и неправильных).",
+    "description": "ООП",
     "type": "module",
     "scripts": {
-        "test": "mocha"
+        "test": "task01/node_modules/.bin/mocha"
     },
     "repository": {
         "type": "git",
@@ -20,6 +20,7 @@
     "devDependencies": {
         "chai": "^4.3.4",
         "mocha": "^9.1.2",
-        "mocha-testcheck": "^1.0.0-rc.0"
+        "mocha-testcheck": "^1.0.0-rc.0",
+        "prettier": "~2.4.1"
     }
 }

@@ -1,4 +1,4 @@
-import {Base} from "./base.js";
+import { Base } from "./base.js";
 
 export class Topic extends Base {
   constructor(text) {

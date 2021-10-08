@@ -1,4 +1,4 @@
-import {Topic} from "./topic.js";
+import { Topic } from "./topic.js";
 
 export class Course extends Topic {
   constructor(text) {
