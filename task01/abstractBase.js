@@ -1,8 +1,8 @@
-export class Base {
+export class AbstractBase {
   title = "";
 
   constructor(title) {
-    if (this.constructor === Base) {
+    if (this.constructor === AbstractBase) {
       throw new TypeError("Can not construct abstract class.");
     }
 

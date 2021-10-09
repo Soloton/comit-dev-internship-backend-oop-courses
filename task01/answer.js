@@ -1,6 +1,6 @@
-import { Base } from "./base.js";
+import { AbstractBase } from "./abstractBase.js";
 
-export class Answer extends Base {
+export class Answer extends AbstractBase {
   isWrite = false;
 
   constructor(text, isWrite) {

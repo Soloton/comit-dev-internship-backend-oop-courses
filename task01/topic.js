@@ -1,6 +1,6 @@
-import { Base } from "./base.js";
+import { AbstractBase } from "./abstractBase.js";
 
-export class Topic extends Base {
+export class Topic extends AbstractBase {
   answers = [];
 
   add(answer) {

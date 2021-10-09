@@ -1,14 +1,14 @@
 import { should } from "chai";
 import { check, gen, install } from "mocha-testcheck";
-import { Base } from "../base.js";
+import { AbstractBase } from "../abstractBase.js";
 
 install();
 should();
 
-describe("Base", () => {
+describe("AbstractBase", () => {
   check.it("should return an exception when created", gen.string, (text) => {
     (() => {
-      new Base(text);
-    }).should.to.throw();
+      new AbstractBase(text);
+    }).should.to.throw(TypeError);
   });
 });
