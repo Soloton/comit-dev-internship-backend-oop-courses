@@ -29,11 +29,10 @@ describe("Course", () => {
     "should return an object containing the topics that have been added only",
     gen.string,
     gen.string,
-    gen.boolean,
-    (courseTitle, topicTitle, isWrite) => {
-      const answerA = new Topic(topicTitle, isWrite);
-      const answerB = new Topic(topicTitle, isWrite);
-      const answerC = new Topic(topicTitle + "1", isWrite);
+    (courseTitle, topicTitle) => {
+      const answerA = new Topic(topicTitle);
+      const answerB = new Topic(topicTitle);
+      const answerC = new Topic(topicTitle + "1");
       const topic = new Course(courseTitle);
       topic.add(answerA);
       topic.add(answerB);
@@ -48,10 +47,9 @@ describe("Course", () => {
     "should return an object not containing the topics that have been deleted",
     gen.string,
     gen.string,
-    gen.boolean,
-    (courseTitle, topicTitle, isWrite) => {
-      const answerA = new Topic(topicTitle, isWrite);
-      const answerB = new Topic(topicTitle + "1", !isWrite);
+    (courseTitle, topicTitle) => {
+      const answerA = new Topic(topicTitle);
+      const answerB = new Topic(topicTitle + "1");
       const topic = new Course(courseTitle);
       topic.add(answerA);
       topic.delete(answerA);
@@ -65,11 +63,10 @@ describe("Course", () => {
     "should return an object containing non-duplicate topics",
     gen.string,
     gen.string,
-    gen.boolean,
-    (courseTitle, topicTitle, isWrite) => {
-      const answerA = new Topic(topicTitle, isWrite);
-      const answerB = new Topic(topicTitle, !isWrite);
-      const answerC = new Topic(topicTitle + "1", !isWrite);
+    (courseTitle, topicTitle) => {
+      const answerA = new Topic(topicTitle);
+      const answerB = new Topic(topicTitle);
+      const answerC = new Topic(topicTitle + "1");
       const topic = new Course(courseTitle);
       topic.add(answerA);
       topic.add(answerA);
@@ -89,9 +86,8 @@ describe("Course", () => {
     "should return an object that can contain mutable objects",
     gen.string,
     gen.string,
-    gen.boolean,
-    (courseTitle, topicTitle, isWrite) => {
-      const answerA = new Topic(topicTitle, isWrite);
+    (courseTitle, topicTitle) => {
+      const answerA = new Topic(topicTitle);
       const topic = new Course(courseTitle);
       topic.add(answerA);
       topic.topics.should.to.have.length(1);
