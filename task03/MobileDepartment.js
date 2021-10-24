@@ -11,11 +11,4 @@ export class MobileDepartment extends Department {
     }
     return false;
   }
-
-  /**
-   * @inheritDoc
-   */
-  setNextStage() {
-    return "testing";
-  }
 }

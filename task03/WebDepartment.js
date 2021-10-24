@@ -1,5 +1,5 @@
-import {Department} from "./department.js";
-import {Project} from "./project.js";
+import { Department } from "./department.js";
+import { Project } from "./project.js";
 
 export class WebDepartment extends Department {
   /**
@@ -11,12 +11,4 @@ export class WebDepartment extends Department {
     }
     return false;
   }
-
-  /**
-   * @inheritDoc
-   */
-  setNextStage() {
-    return "testing";
-  }
-
 }
