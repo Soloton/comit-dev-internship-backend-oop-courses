@@ -16,7 +16,12 @@ export class Project {
     // noinspection JSUnresolvedVariable,JSUnresolvedFunction
     this._title = upCaseFirst(faker.git.commitMessage());
     this._complexity = Math.floor(Math.random() * 3) + 1;
-    this._type = Math.floor(Math.random() * 2) + 1;
+    this._type = Math.random() < 0.5;
+    this._nextStage = "development";
+  }
+
+  get nextStage() {
+    return this._nextStage;
   }
 
   get title() {
@@ -28,11 +33,11 @@ export class Project {
   }
 
   /**
-   * Project type
-   * @returns {number} 1 - mobile; 2 - web
+   * Project isMobile
+   * @returns {boolean} 1 - mobile; 2 - web
    */
-  get type() {
-    return this._type;
+  get isMobile() {
+    return !!this._type;
   }
 
   static getAutoIncrement() {
@@ -51,6 +56,17 @@ export class Project {
     return result;
   }
 
+  setNextStage() {
+    switch (this.nextStage) {
+      case "development":
+        this._nextStage = "testing";
+        break;
+      case "testing":
+        this._nextStage = "done";
+        break;
+    }
+  }
+
   /**
    *
    * @param {Map} mapDevelopers
@@ -63,21 +79,17 @@ export class Project {
       return;
     }
 
-    const developersArray = Array.from(mapDevelopers.keys());
-
-    if (!developersArray) {
-      return;
-    }
-
-    if (this.type !== 1) {
+    if (!this.isMobile) {
       return [mapDevelopers.keys()[0]];
     }
 
     let count = Math.min(mapDevelopers.size, this.complexity);
 
+    const developersArray = [];
+
     for (const developer of mapDevelopers.keys()) {
       if (developer && developer instanceof Developer) {
-        if (count-- >= 0) {
+        if (count-- <= 0) {
           return developersArray;
         }
         developer.projectsCount++;

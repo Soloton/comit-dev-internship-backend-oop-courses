@@ -6,7 +6,7 @@
     "scripts": {
         "task02": "node ./task02/tableGenerator.js",
         "task03 tests": "mocha ./task03/test/*.test.js --parallel",
-        "task03 run": "node ./task03/app.js 5"
+        "task03 run": "node ./task03/app.js 15"
     },
     "repository": {
         "type": "git",

@@ -11,6 +11,10 @@ export class Company {
     this.testDepartment = new TestDepartment();
     this._unallocatedProjects = new Map();
     this._projectsInWork = new Map();
+
+    this.hiredDevelopersCount = 0;
+    this.firedDevelopersCount = 0;
+    this.finishedProjectsCount = 0;
   }
 
   getNewProjects() {
@@ -58,9 +62,9 @@ export class Company {
       ...this.testDepartment.allocateProject(projects),
     ]);
 
-    for (const key of this._projectsInWork.keys()) {
-      projects.delete(key);
-    }
+    // for (const key of this._projectsInWork.keys()) {
+    //   projects.delete(key);
+    // }
   }
 
   /**
@@ -74,7 +78,7 @@ export class Company {
    * Увольнение неудачника
    */
   fireLooser() {
-    // todo уволить одного девелопера, который меньше всего учавствовал
+    // todo уволить одного девелопера, который меньше всего участвовал
     //  в проектах из тех, кто три дня не участвовал в проектах
 
     const developersArray = [
@@ -107,7 +111,18 @@ export class Company {
       });
 
     if (developer) {
-      this.mobileDepartment.freeDevelopers.delete(developer);
+      if (this.mobileDepartment.freeDevelopers.delete(developer)) {
+        this.firedDevelopersCount++;
+        return developer;
+      }
+      if (this.webDepartment.freeDevelopers.delete(developer)) {
+        this.firedDevelopersCount++;
+        return developer;
+      }
+      if (this.testDepartment.freeDevelopers.delete(developer)) {
+        this.firedDevelopersCount++;
+        return developer;
+      }
     }
   }
 
@@ -117,41 +132,29 @@ export class Company {
   hireDevelopers() {
     const unallocatedProjects = this.getUnallocatedProjects();
     unallocatedProjects.forEach((x) => {
-      switch (x.type) {
-        case 1:
-          this.webDepartment.addDevelopers(x.complexity);
-          break;
-        case 2:
-          this.mobileDepartment.addDevelopers();
-          break;
+      if (x.nextStage === "development") {
+        if (x.isMobile) {
+          this.hiredDevelopersCount += this.webDepartment.addFreeDevelopers(
+            x.complexity
+          );
+        } else {
+          this.hiredDevelopersCount +=
+            this.mobileDepartment.addFreeDevelopers();
+        }
+      } else if (x.nextStage === "testing") {
+        this.hiredDevelopersCount += this.mobileDepartment.addFreeDevelopers();
+      } else {
+        throw new Error();
       }
     });
   }
 
-  tickProjects() {
-    if (
-      !(
-        this._projectsInWork &&
-        this._projectsInWork instanceof Map &&
-        this._projectsInWork.size > 0
-      )
-    ) {
-      return;
-    }
+  tickDay() {
+    this.tickProjects();
+    this.tickDevelopers();
+  }
 
-    for (let projectInWork of this._projectsInWork) {
-      let k = projectInWork[0];
-      let v = projectInWork[1];
-      if (!(k && k instanceof Project)) {
-        return;
-      }
-      if (k.type === 1) {
-        v.workingDays++;
-      } else {
-        v.workingDays += k.complexity;
-      }
-    }
-
+  tickDevelopers() {
     function tickDevelopers() {
       if (!(this.freeDevelopers && this.freeDevelopers instanceof Map)) {
         return;
@@ -167,5 +170,44 @@ export class Company {
     tickDevelopers.call(this.webDepartment);
     tickDevelopers.call(this.mobileDepartment);
     tickDevelopers.call(this.testDepartment);
+  }
+
+  tickProjects() {
+    if (
+      !(
+        this._projectsInWork &&
+        this._projectsInWork instanceof Map &&
+        this._projectsInWork.size > 0
+      )
+    ) {
+      return;
+    }
+
+    /**
+     *
+     * @type {Developer[]}
+     */
+    const doneProjects = [];
+    for (let projectInWork of this._projectsInWork) {
+      let project = projectInWork[0];
+      let meta = projectInWork[1];
+      if (!(project && project instanceof Project)) {
+        continue;
+      }
+      if (project.isMobile) {
+        meta.workingDays++;
+      } else {
+        meta.workingDays += project.complexity;
+      }
+      project.setNextStage();
+      if (project.nextStage === "done") {
+        doneProjects.push(project);
+      }
+    }
+
+    doneProjects.forEach((x) => {
+      this._projectsInWork.delete(x);
+      this.finishedProjectsCount++;
+    });
   }
 }

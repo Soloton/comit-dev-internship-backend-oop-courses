@@ -18,10 +18,11 @@ export class Department {
   //   this._freeDevelopers = value;
   // }
 
-  addDevelopers(count = 1) {
+  addFreeDevelopers(count = 1) {
     for (let i = 0; i < count; i++) {
-      this.freeDevelopers.set(new Developer(), NaN);
+      this.freeDevelopers.set(new Developer(), { department: this });
     }
+    return count;
   }
 
   /**
@@ -34,9 +35,10 @@ export class Department {
       return new Map();
     }
     const result = new Map();
-    projects.forEach((value, project) => {
+
+    for (const project of projects.keys()) {
       if (!(project instanceof Project)) {
-        return;
+        break;
       }
       if (this.isMeetConditions(project)) {
         // проект соответствует условиям отдела разработки,
@@ -48,10 +50,11 @@ export class Department {
               developers: developersToProject,
               workingDays: 0,
             });
+            projects.delete(project);
           }
         }
       }
-    });
+    }
     return result;
   }
 
@@ -62,5 +65,13 @@ export class Department {
    */
   isMeetConditions(project) {
     return false;
+  }
+
+  /**
+   * Выполняется при переходе к следующему шагу, после завершения дня
+   * @returns {undefined || string}
+   */
+  setNextStage() {
+    return undefined;
   }
 }

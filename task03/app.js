@@ -2,6 +2,8 @@
 
 import { Company } from "./company.js";
 
+let dayNumber = 0;
+
 function runDays(dayCount) {
   const company = new Company();
 
@@ -20,7 +22,9 @@ function runDays(dayCount) {
       }
       array.forEach((project, j) =>
         console.log(
-          `\t${j + 1} ${project.title} [${project.type}/*${project.complexity}]`
+          `\t${j + 1} ${project.title} [${project.isMobile ? "Mob" : "Web"}/*${
+            project.complexity
+          } ${project}]`
         )
       );
       console.log(`\t${hr}`);
@@ -28,6 +32,7 @@ function runDays(dayCount) {
   }
 
   for (let i = 0; i < dayCount; i++) {
+    dayNumber = i;
     console.log(doubleHr);
     console.log("День " + (i + 1));
     console.log(doubleHr);
@@ -51,9 +56,23 @@ function runDays(dayCount) {
     //   - отделы сами разбираются со своими возможностями. Скормим отделам
     //     массив проектов, они возвратят только те, что они не могут взять в
     //     работу.
-    console.log("Распределяем");
+    console.log("Распределяем вчерашние проекты");
     company.allocateUnallocatedProjects();
+    printArray(company.getUnallocatedProjects(), "Вчерашние");
+    printArray(company.getProjectsInWorkArray(), "В работе");
 
+    // # Директор берёт новые проекты (от 0 до 4).
+    console.log("Набираем ежедневные новые проекты");
+    const newProjects = company.getNewProjects();
+
+    printArray(newProjects, "Новые проекты");
+
+    // # Директор распределяет новые проекты по отделам. Проекты могут не
+    //   распределиться, если нет свободных подходящих программистов.
+    //   Тогда они останутся на следующий день, в нераспределённых
+    console.log("Добавляем новые проекты распределяем их");
+    company.addUnallocated(newProjects);
+    company.allocateUnallocatedProjects();
     printArray(company.getUnallocatedProjects(), "Вчерашние");
     printArray(company.getProjectsInWorkArray(), "В работе");
 
@@ -61,27 +80,8 @@ function runDays(dayCount) {
     //   в зависимости от требований проекта и работающих над ним программистов.
     //   В результате этого могут высвободиться разработчики в том или ином
     //   отделе (висят в отделе).
-    // todo Сделать цикл по тикам проектов
-    console.log("Тикаем проектами");
-    company.tickProjects();
-
-    // # Директор берёт новые проекты (от 0 до 4).
-    console.log("Берём ежедневные новые проекты");
-    const newProjects = company.getNewProjects();
-    printArray(newProjects, "Новые проекты");
-
-    // # Директор распределяет новые проекты по отделам. Проекты могут не
-    //   распределиться, если нет свободных подходящих программистов.
-    console.log("Распределяем проекты");
-    company.allocateUnallocatedProjects();
-    printArray(company.getUnallocatedProjects(), "Вчерашние");
-    printArray(company.getProjectsInWorkArray(), "В работе");
-
-    // # Директор записывает нераспределённые проекты
-    console.log("Добавляем новые проекты во вчерашние");
-    company.addUnallocated(newProjects);
-    printArray(company.getUnallocatedProjects(), "Вчерашние");
-    printArray(company.getProjectsInWorkArray(), "В работе");
+    console.log("Тикаем днём по проектам и разработчикам");
+    company.tickDay();
 
     // # Директор берёт самого непытного программиста из тех, кто не работает
     //   больше 3 дней и увольняет его одного.
@@ -93,7 +93,11 @@ function runDays(dayCount) {
     // # Конец дня #
   }
 
-  console.log("\n" + doubleHr);
+  console.log(doubleHr);
+  console.log(`Завершено проектов:\t${company.finishedProjectsCount}`);
+  console.log(`Нанято разработчиков:\t${company.hiredDevelopersCount}`);
+  console.log(`Уволено разработчиков:\t${company.firedDevelopersCount}`);
+  console.log(doubleHr);
 }
 
 const args = process.argv.slice(2);

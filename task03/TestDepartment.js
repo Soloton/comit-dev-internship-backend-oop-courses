@@ -7,4 +7,11 @@ export class TestDepartment extends Department {
   isMeetConditions(project) {
     return true;
   }
+
+  /**
+   * @inheritDoc
+   */
+  setNextStage() {
+    return "done";
+  }
 }

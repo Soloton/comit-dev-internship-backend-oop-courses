@@ -7,8 +7,15 @@ export class MobileDepartment extends Department {
    */
   isMeetConditions(project) {
     if (project && project instanceof Project) {
-      return project.type === 1;
+      return project.isMobile;
     }
     return false;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  setNextStage() {
+    return "testing";
   }
 }

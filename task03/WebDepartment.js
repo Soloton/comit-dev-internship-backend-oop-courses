@@ -1,5 +1,5 @@
-import { Department } from "./department.js";
-import { Project } from "./project.js";
+import {Department} from "./department.js";
+import {Project} from "./project.js";
 
 export class WebDepartment extends Department {
   /**
@@ -7,8 +7,16 @@ export class WebDepartment extends Department {
    */
   isMeetConditions(project) {
     if (project && project instanceof Project) {
-      return project.type === 2;
+      return !project.isMobile;
     }
     return false;
   }
+
+  /**
+   * @inheritDoc
+   */
+  setNextStage() {
+    return "testing";
+  }
+
 }
