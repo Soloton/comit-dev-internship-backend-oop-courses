@@ -1,22 +1,24 @@
 import faker from "faker/locale/ru.js";
+import {BaseObject} from "./baseObject.js";
 
-export class Developer {
+export class Developer extends BaseObject {
   static autoIncrement = 0;
 
-  constructor() {
-    this.id = Developer.getAutoIncrement();
+  constructor(defaults = {}) {
+    super();
+    this.id = defaults.id || BaseObject.getAutoIncrement(Developer);
     // noinspection JSUnresolvedVariable,JSCheckFunctionSignatures
-    this._title = faker.name.findName();
-    this._projectsCount = 0;
-    this._daysWithoutWorkCount = 0;
+    this._title = defaults.title || faker.name.findName();
+    this._projectsCount = defaults.projectsCount || 0;
+    this._daysWithoutWork = defaults.daysWithoutWorkCount || 0;
   }
 
   get daysWithoutWork() {
-    return this._daysWithoutWorkCount;
+    return this._daysWithoutWork;
   }
 
   set daysWithoutWork(value) {
-    this._daysWithoutWorkCount = value;
+    this._daysWithoutWork = value;
   }
 
   get projectsCount() {
@@ -31,7 +33,7 @@ export class Developer {
     return `${this._title} (#${this.id})`;
   }
 
-  static getAutoIncrement() {
-    return ++Developer.autoIncrement;
+  static generate(count, Class = Developer) {
+    return BaseObject.generate(count, Class);
   }
 }

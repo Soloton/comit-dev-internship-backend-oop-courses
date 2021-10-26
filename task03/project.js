@@ -1,10 +1,12 @@
 import faker from "faker/locale/ru.js";
-import { Developer } from "./developer.js";
+import { BaseObject } from "./baseObject.js";
 
-export class Project {
+export class Project extends BaseObject {
   static autoIncrement = 0;
 
-  constructor() {
+  constructor(defaults = {}) {
+    super();
+
     function upCaseFirst(str) {
       if (!str) {
         return str;
@@ -12,48 +14,48 @@ export class Project {
       return str[0].toUpperCase() + str.slice(1);
     }
 
-    this.id = Project.getAutoIncrement();
+    this._id = defaults.id || BaseObject.getAutoIncrement(Project);
+
     // noinspection JSUnresolvedVariable,JSUnresolvedFunction
-    this._title = upCaseFirst(faker.git.commitMessage());
-    this._complexity = Math.floor(Math.random() * 3) + 1;
-    this._type = Math.random() < 0.5;
-    this._nextStage = "development";
-  }
+    this._title = upCaseFirst(defaults.title || faker.git.commitMessage());
 
-  get nextStage() {
-    return this._nextStage;
-  }
+    this._complexity = defaults.complexity || Math.floor(Math.random() * 3) + 1;
 
-  get title() {
-    return `${this._title} (#${this.id})`;
+    this._isMobile = defaults.hasOwnProperty("isMobile")
+      ? defaults.isMobile
+      : Math.random() < 0.5;
+
+    this._nextStage = defaults.hasOwnProperty("nextStage")
+      ? defaults.nextStage
+      : "development";
   }
 
   get complexity() {
     return this._complexity;
   }
 
-  /**
-   * Project isMobile
-   * @returns {boolean} 1 - mobile; 2 - web
-   */
+  get id() {
+    return this._id;
+  }
+
+  get title() {
+    return `${this._title} (#${this._id})`;
+  }
+
+  get nextStage() {
+    return this._nextStage;
+  }
+
   get isMobile() {
-    return !!this._type;
+    return !!this._isMobile;
   }
 
   static getAutoIncrement() {
     return ++Project.autoIncrement;
   }
 
-  static generateProjects(count) {
-    const result = [];
-
-    if (count) {
-      for (let i = 0; i < count; i++) {
-        result.push(new Project());
-      }
-    }
-
-    return result;
+  static generate(count, Class = Project) {
+    return BaseObject.generate(count, Class);
   }
 
   setNextStage() {
@@ -65,39 +67,5 @@ export class Project {
         this._nextStage = "done";
         break;
     }
-  }
-
-  /**
-   *
-   * @param {Map} mapDevelopers
-   * @return {undefined || Developer[]}
-   */
-  beginWork(mapDevelopers) {
-    if (
-      !(mapDevelopers && mapDevelopers instanceof Map && mapDevelopers.size > 0)
-    ) {
-      return;
-    }
-
-    if (!this.isMobile) {
-      return [mapDevelopers.keys()[0]];
-    }
-
-    let count = Math.min(mapDevelopers.size, this.complexity);
-
-    const developersArray = [];
-
-    for (const developer of mapDevelopers.keys()) {
-      if (developer && developer instanceof Developer) {
-        if (count-- <= 0) {
-          return developersArray;
-        }
-        developer.projectsCount++;
-        developer.daysWithoutWork = 0;
-        developersArray.push(developer);
-      }
-    }
-
-    return developersArray;
   }
 }

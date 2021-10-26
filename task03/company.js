@@ -1,6 +1,6 @@
-import { WebDepartment } from "./WebDepartment.js";
-import { MobileDepartment } from "./MobileDepartment.js";
-import { TestDepartment } from "./TestDepartment.js";
+import { WebDepartment } from "./webDepartment.js";
+import { MobileDepartment } from "./mobileDepartment.js";
+import { TestDepartment } from "./testDepartment.js";
 import { Project } from "./project.js";
 import { Developer } from "./developer.js";
 
@@ -11,18 +11,129 @@ export class Company {
     this.testDepartment = new TestDepartment();
     this._unallocatedProjects = new Map();
     this._projectsInWork = new Map();
+    this._doneProjects = [];
 
     this.hiredDevelopersCount = 0;
     this.firedDevelopersCount = 0;
     this.finishedProjectsCount = 0;
   }
 
-  getNewProjects() {
-    return Project.generateProjects(Math.floor(Math.random() * 3) + 1);
+  get doneProjects() {
+    return this._doneProjects;
+  }
+
+  static runDays(dayCount) {
+    const company = new Company();
+
+    const hr = new Array(42).join("-");
+    const doubleHr = new Array(42 * 2).join("=");
+
+    /**
+     *
+     * @param {Project[]} array
+     * @param {string || undefined} caption
+     */
+    function printArray(array, caption = "") {
+      if (array && Array.isArray(array) && array.length > 0) {
+        if (caption) {
+          console.log(`\t${caption}`);
+        }
+        array.forEach((project, j) =>
+          console.log(
+            `\t${j + 1} ${project.title} [${project.complexity}*${
+              project.isMobile ? "Mob" : "Web"
+            } ${project.nextStage}]`
+          )
+        );
+        console.log(`\t${hr}`);
+      }
+    }
+
+    for (let i = 0; i < dayCount; i++) {
+      console.log(doubleHr);
+      console.log("День " + (i + 1));
+      console.log(doubleHr);
+
+      // # Начало дня #
+      //
+      // # *Директор* берёт нераспределённые проекты.
+      //   - у директора в компании есть перечень в статусе "Вчерашний" ("Ожидающий")
+      console.log("УТРО ДОБРОЕ!");
+      printArray(company.getUnallocatedProjects(), "Вчерашние");
+      printArray(company.getProjectsInWorkArray(), "В работе");
+
+      // # Директор кидает в каждый *отдел* необходимое количество *программистов*
+      //   (по *типам* нераспределённых проектов).
+      //   - узнёт в отделах сколько программистов нужно и нанимает нужное количество
+      console.log("Нанимаем");
+      company.hireDevelopers();
+
+      // # Директор распределяет старые проекты по отделам.
+      //   - отделы сами разбираются со своими возможностями. Скормим отделам
+      //     массив проектов, они возвратят только те, что они не могут взять в
+      //     работу.
+      console.log("Распределяем вчерашние проекты");
+      company.allocateUnallocatedProjects();
+      printArray(company.getUnallocatedProjects(), "Вчерашние");
+      printArray(company.getProjectsInWorkArray(), "В работе");
+
+      // # Директор берёт новые проекты (от 0 до 4).
+      console.log("Набираем ежедневные новые проекты");
+      const newProjects = company.getNewProjects();
+
+      printArray(newProjects, "Новые проекты");
+
+      // # Директор распределяет новые проекты по отделам. Проекты могут не
+      //   распределиться, если нет свободных подходящих программистов.
+      //   Тогда они останутся на следующий день, в нераспределённых
+      console.log("Добавляем новые проекты распределяем их");
+      company.addUnallocated(newProjects);
+      company.allocateUnallocatedProjects();
+      printArray(company.getUnallocatedProjects(), "Вчерашние");
+      printArray(company.getProjectsInWorkArray(), "В работе");
+      // # Отделы делают работу, переводя проекты в следующий *статус*
+      //   в зависимости от требований проекта и работающих над ним программистов.
+      //   В результате этого могут высвободиться разработчики в том или ином
+      //   отделе (висят в отделе).
+
+      console.log("Тикаем днём по проектам и разработчикам");
+      company.tickDay();
+      // # Директор берёт самого непытного программиста из тех, кто не работает
+      //   больше 3 дней и увольняет его одного.
+
+      console.log("Увольняем неудачника");
+      const fireLooser = company.fireLooser();
+      if (fireLooser) {
+        console.log(
+          `${fireLooser.title} без дела ${fireLooser.daysWithoutWork} дня,` +
+            ` был(а) на ${fireLooser.projectsCount} пр.`
+        );
+      }
+
+      printArray(company.doneProjects, "Завершённые проекты");
+
+      console.log("ВЕЧЕР ДОБРЫЙ!");
+
+      // # Конец дня #
+    }
+
+    console.log(doubleHr);
+    console.log(`Завершено проектов:\t${company.finishedProjectsCount}`);
+    console.log(`Нанято разработчиков:\t${company.hiredDevelopersCount}`);
+    console.log(`Уволено разработчиков:\t${company.firedDevelopersCount}`);
+    console.log(doubleHr);
   }
 
   /**
-   *
+   * Набор новых проектов
+   * @returns {Project[]}
+   */
+  getNewProjects() {
+    return Project.generate(Math.floor(Math.random() * 3) + 1);
+  }
+
+  /**
+   * Добавить к проекты к нераспределённым
    * @param {Project[]} projects
    */
   addUnallocated(projects) {
@@ -61,10 +172,6 @@ export class Company {
       ...this.webDepartment.allocateProject(projects),
       ...this.testDepartment.allocateProject(projects),
     ]);
-
-    // for (const key of this._projectsInWork.keys()) {
-    //   projects.delete(key);
-    // }
   }
 
   /**
@@ -76,11 +183,9 @@ export class Company {
 
   /**
    * Увольнение неудачника
+   * @returns {Developer || undefined}
    */
   fireLooser() {
-    // todo уволить одного девелопера, который меньше всего участвовал
-    //  в проектах из тех, кто три дня не участвовал в проектах
-
     const developersArray = [
       ...this.mobileDepartment.freeDevelopers,
       ...this.webDepartment.freeDevelopers,
@@ -127,22 +232,21 @@ export class Company {
   }
 
   /**
-   * Найм работников в отделы
+   * Найм работников в отделы  на нераспределённые проекты
    */
   hireDevelopers() {
     const unallocatedProjects = this.getUnallocatedProjects();
     unallocatedProjects.forEach((x) => {
       if (x.nextStage === "development") {
         if (x.isMobile) {
-          this.hiredDevelopersCount += this.webDepartment.addFreeDevelopers(
+          this.hiredDevelopersCount += this.webDepartment.hireDevelopers(
             x.complexity
           );
         } else {
-          this.hiredDevelopersCount +=
-            this.mobileDepartment.addFreeDevelopers();
+          this.hiredDevelopersCount += this.mobileDepartment.hireDevelopers();
         }
       } else if (x.nextStage === "testing") {
-        this.hiredDevelopersCount += this.mobileDepartment.addFreeDevelopers();
+        this.hiredDevelopersCount += this.mobileDepartment.hireDevelopers();
       } else {
         throw new Error();
       }
@@ -155,21 +259,9 @@ export class Company {
   }
 
   tickDevelopers() {
-    function tickDevelopers() {
-      if (!(this.freeDevelopers && this.freeDevelopers instanceof Map)) {
-        return;
-      }
-      for (let k of this.freeDevelopers.keys()) {
-        if (k && k instanceof Developer) {
-          k.daysWithoutWork++;
-          k.projectsCount = 0;
-        }
-      }
-    }
-
-    tickDevelopers.call(this.webDepartment);
-    tickDevelopers.call(this.mobileDepartment);
-    tickDevelopers.call(this.testDepartment);
+    this.webDepartment.tickDevelopers();
+    this.mobileDepartment.tickDevelopers();
+    this.testDepartment.tickDevelopers();
   }
 
   tickProjects() {
@@ -183,30 +275,20 @@ export class Company {
       return;
     }
 
-    /**
-     *
-     * @type {Developer[]}
-     */
-    const doneProjects = [];
-    for (let projectInWork of this._projectsInWork) {
-      let project = projectInWork[0];
-      let meta = projectInWork[1];
+    const doneProjectsToday = [];
+    for (let project of this._projectsInWork.keys()) {
       if (!(project && project instanceof Project)) {
         continue;
       }
-      if (project.isMobile) {
-        meta.workingDays++;
-      } else {
-        meta.workingDays += project.complexity;
-      }
       project.setNextStage();
       if (project.nextStage === "done") {
-        doneProjects.push(project);
+        doneProjectsToday.push(project);
       }
     }
 
-    doneProjects.forEach((x) => {
+    doneProjectsToday.forEach((x) => {
       this._projectsInWork.delete(x);
+      this._doneProjects.push(x);
       this.finishedProjectsCount++;
     });
   }

@@ -14,20 +14,55 @@ export class Department {
     return this._freeDevelopers;
   }
 
-  // set freeDevelopers(value) {
-  //   this._freeDevelopers = value;
-  // }
-
-  addFreeDevelopers(count = 1) {
-    for (let i = 0; i < count; i++) {
-      this.freeDevelopers.set(new Developer(), { department: this });
+  /**
+   *
+   * @param  project {Project}
+   * @param  mapDevelopers {Map}
+   * @return {undefined || Developer[]}
+   */
+  static beginWork(project, mapDevelopers) {
+    if (
+      !(project && project instanceof Project) ||
+      !(mapDevelopers && mapDevelopers instanceof Map && mapDevelopers.size > 0)
+    ) {
+      return;
     }
+
+    if (!project.isMobile) {
+      return [mapDevelopers.keys()[0]];
+    }
+
+    let count = Math.min(mapDevelopers.size, project.complexity);
+
+    const result = [];
+
+    for (const developer of mapDevelopers.keys()) {
+      if (developer && developer instanceof Developer) {
+        if (count-- <= 0) {
+          return result;
+        }
+        developer.projectsCount++;
+        developer.daysWithoutWork = 0;
+        result.push(developer);
+      }
+    }
+
+    return result;
+  }
+
+  hireDevelopers(count = 1) {
+    const generateDevelopers = Developer.generate(count);
+
+    generateDevelopers.forEach((x) => {
+      this.freeDevelopers.set(x, { department: this });
+    });
+
     return count;
   }
 
   /**
    *
-   * @param {Map} projects
+   * @param projects {Map}
    * @returns {Map}
    */
   allocateProject(projects) {
@@ -41,15 +76,13 @@ export class Department {
         break;
       }
       if (this.isMeetConditions(project)) {
-        // проект соответствует условиям отдела разработки,
-        // осталось занять разработчика(ов) этим проектом
         if (this.freeDevelopers && this.freeDevelopers instanceof Map) {
-          const developersToProject = project.beginWork(this.freeDevelopers);
+          const developersToProject = Department.beginWork(
+            project,
+            this.freeDevelopers
+          );
           if (developersToProject) {
-            result.set(project, {
-              developers: developersToProject,
-              workingDays: 0,
-            });
+            result.set(project, NaN);
             projects.delete(project);
           }
         }
@@ -59,7 +92,7 @@ export class Department {
   }
 
   /**
-   *
+   * Проект соответствует условиям отдела
    * @param {Project} project
    * @returns {boolean}
    */
@@ -67,11 +100,15 @@ export class Department {
     return false;
   }
 
-  /**
-   * Выполняется при переходе к следующему шагу, после завершения дня
-   * @returns {undefined || string}
-   */
-  setNextStage() {
-    return undefined;
+  tickDevelopers() {
+    if (!(this.freeDevelopers && this.freeDevelopers instanceof Map)) {
+      return;
+    }
+    for (let k of this.freeDevelopers.keys()) {
+      if (k && k instanceof Developer) {
+        k.daysWithoutWork++;
+        k.projectsCount = 0;
+      }
+    }
   }
 }
