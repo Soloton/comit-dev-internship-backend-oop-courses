@@ -13,4 +13,20 @@ describe("MobileDepartment", () => {
       .to.be.a("boolean")
       .that.to.be.equal(isMobile);
   });
+
+  // noinspection JSUnresolvedVariable
+  check.it(
+    "developers can work on a one mobile project",
+    gen.sPosInt,
+    (count) => {
+      const mobileDepartment = new MobileDepartment();
+      mobileDepartment.hireDevelopers(count);
+      const project = new Project({ isMobile: true });
+      const allocateProject = mobileDepartment.beginWork(project);
+
+      expect(allocateProject.length)
+        .to.be.lessThanOrEqual(count)
+        .and.to.be.greaterThanOrEqual(1);
+    }
+  );
 });

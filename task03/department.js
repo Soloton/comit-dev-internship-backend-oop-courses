@@ -3,6 +3,9 @@ import { Developer } from "./developer.js";
 
 export class Department {
   constructor() {
+    if (this.constructor === Department) {
+      throw new TypeError("Can't instantiate abstract class!");
+    }
     this._freeDevelopers = new Map();
   }
 
@@ -17,10 +20,10 @@ export class Department {
   /**
    *
    * @param  project {Project}
-   * @param  mapDevelopers {Map}
    * @return {undefined || Developer[]}
    */
-  static beginWork(project, mapDevelopers) {
+  beginWork(project) {
+    const mapDevelopers = this.freeDevelopers;
     if (
       !(project && project instanceof Project) ||
       !(mapDevelopers && mapDevelopers instanceof Map && mapDevelopers.size > 0)
@@ -28,11 +31,10 @@ export class Department {
       return;
     }
 
-    if (!project.isMobile) {
-      return [mapDevelopers.keys()[0]];
-    }
-
-    let count = Math.min(mapDevelopers.size, project.complexity);
+    let count = Math.min(
+      mapDevelopers.size,
+      this.getDevelopersNorm(project.complexity)
+    );
 
     const result = [];
 
@@ -48,6 +50,11 @@ export class Department {
     }
 
     return result;
+  }
+
+  // noinspection JSUnusedLocalSymbols
+  getDevelopersNorm(complexity) {
+    throw new Error(`Method 'getDevelopersNorm()' must be implemented}.`);
   }
 
   hireDevelopers(count = 1) {
@@ -77,10 +84,7 @@ export class Department {
       }
       if (this.isMeetConditions(project)) {
         if (this.freeDevelopers && this.freeDevelopers instanceof Map) {
-          const developersToProject = Department.beginWork(
-            project,
-            this.freeDevelopers
-          );
+          const developersToProject = this.beginWork(project);
           if (developersToProject) {
             result.set(project, NaN);
             projects.delete(project);

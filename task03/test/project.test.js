@@ -45,30 +45,6 @@ describe("Project", () => {
     expect(project.nextStage).to.be.a("string").that.to.be.equal("development");
   });
 
-  // noinspection JSUnresolvedVariable
-  check.it("autoIncrement and generate always works", gen.sPosInt, (count) => {
-    Project.autoIncrement = count;
-
-    const generate = Project.generate(count, Project);
-    expect(generate)
-      .to.be.an("array")
-      .to.be.lengthOf(count)
-      .and.to.satisfy(function (element) {
-        return element.every(function (x) {
-          return x instanceof Project;
-        });
-      });
-
-    let j = -1;
-    for (let i = 0; i < generate.length; i++) {
-      expect(generate[i].id)
-        .to.be.a("number")
-        .that.to.be.equal(i + 1 + count)
-        .that.to.be.equal(j + 2 + count);
-      j = i;
-    }
-  });
-
   check.it("next stage", () => {
     const project = new Project();
 

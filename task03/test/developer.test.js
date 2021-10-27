@@ -49,28 +49,4 @@ describe("Developer", () => {
       .to.be.a("number")
       .and.to.be.greaterThanOrEqual(0);
   });
-
-  // noinspection JSUnresolvedVariable
-  check.it("autoIncrement and generate always works", gen.sPosInt, (count) => {
-    Developer.autoIncrement = count;
-
-    const generate = Developer.generate(count, Developer);
-    expect(generate)
-      .to.be.an("array")
-      .to.be.lengthOf(count)
-      .and.to.satisfy(function (element) {
-        return element.every(function (x) {
-          return x instanceof Developer;
-        });
-      });
-
-    let j = -1;
-    for (let i = 0; i < generate.length; i++) {
-      expect(generate[i].id)
-        .to.be.a("number")
-        .that.to.be.equal(i + 1 + count)
-        .that.to.be.equal(j + 2 + count);
-      j = i;
-    }
-  });
 });
