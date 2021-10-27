@@ -1,5 +1,5 @@
-import faker from "faker/locale/ru.js";
-import {BaseObject} from "./baseObject.js";
+import faker from "faker";
+import { BaseObject } from "./baseObject.js";
 
 export class Developer extends BaseObject {
   static autoIncrement = 0;

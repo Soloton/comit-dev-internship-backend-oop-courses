@@ -51,76 +51,76 @@ export class Company {
 
     for (let i = 0; i < dayCount; i++) {
       console.log(doubleHr);
-      console.log("День " + (i + 1));
+      console.log("Day " + (i + 1));
       console.log(doubleHr);
 
       // # Начало дня #
       //
       // # *Директор* берёт нераспределённые проекты.
       //   - у директора в компании есть перечень в статусе "Вчерашний" ("Ожидающий")
-      console.log("УТРО ДОБРОЕ!");
-      printArray(company.getUnallocatedProjects(), "Вчерашние");
-      printArray(company.getProjectsInWorkArray(), "В работе");
+      console.log("GOOD MORNING!");
+      printArray(company.getUnallocatedProjects(), "Yesterday's");
+      printArray(company.getProjectsInWorkArray(), "In work");
 
       // # Директор кидает в каждый *отдел* необходимое количество *программистов*
       //   (по *типам* нераспределённых проектов).
       //   - узнёт в отделах сколько программистов нужно и нанимает нужное количество
-      console.log("Нанимаем");
+      console.log("We hire developers");
       company.hireDevelopers();
 
       // # Директор распределяет старые проекты по отделам.
       //   - отделы сами разбираются со своими возможностями. Скормим отделам
       //     массив проектов, они возвратят только те, что они не могут взять в
       //     работу.
-      console.log("Распределяем вчерашние проекты");
+      console.log("We distribute yesterday's projects");
       company.allocateUnallocatedProjects();
-      printArray(company.getUnallocatedProjects(), "Вчерашние");
-      printArray(company.getProjectsInWorkArray(), "В работе");
+      printArray(company.getUnallocatedProjects(), "Unallocated");
+      printArray(company.getProjectsInWorkArray(), "In work");
 
       // # Директор берёт новые проекты (от 0 до 4).
-      console.log("Набираем ежедневные новые проекты");
+      console.log("Get daily new projects");
       const newProjects = company.getNewProjects();
 
-      printArray(newProjects, "Новые проекты");
+      printArray(newProjects, "New projects");
 
       // # Директор распределяет новые проекты по отделам. Проекты могут не
       //   распределиться, если нет свободных подходящих программистов.
       //   Тогда они останутся на следующий день, в нераспределённых
-      console.log("Добавляем новые проекты распределяем их");
+      console.log("Add new projects, distribute them");
       company.addUnallocated(newProjects);
       company.allocateUnallocatedProjects();
-      printArray(company.getUnallocatedProjects(), "Вчерашние");
-      printArray(company.getProjectsInWorkArray(), "В работе");
+      printArray(company.getUnallocatedProjects(), "Yesterday's");
+      printArray(company.getProjectsInWorkArray(), "In work");
       // # Отделы делают работу, переводя проекты в следующий *статус*
       //   в зависимости от требований проекта и работающих над ним программистов.
       //   В результате этого могут высвободиться разработчики в том или ином
       //   отделе (висят в отделе).
 
-      console.log("Тикаем днём по проектам и разработчикам");
+      console.log("Ticking during the day on projects and developers");
       company.tickDay();
       // # Директор берёт самого непытного программиста из тех, кто не работает
       //   больше 3 дней и увольняет его одного.
 
-      console.log("Увольняем неудачника");
+      console.log("Fire the loser");
       const fireLooser = company.fireLooser();
       if (fireLooser) {
         console.log(
-          `${fireLooser.title} без дела ${fireLooser.daysWithoutWork} дня,` +
-            ` был(а) на ${fireLooser.projectsCount} пр.`
+          `${fireLooser.title} has been idle for ${fireLooser.daysWithoutWork} days,` +
+            ` participated in ${fireLooser.projectsCount} projects`
         );
       }
 
-      printArray(company.doneProjects, "Завершённые проекты");
+      printArray(company.doneProjects, "Completed projects");
 
-      console.log("ВЕЧЕР ДОБРЫЙ!");
+      console.log("GOOD EVENING!");
 
       // # Конец дня #
     }
 
     console.log(doubleHr);
-    console.log(`Завершено проектов:\t${company.finishedProjectsCount}`);
-    console.log(`Нанято разработчиков:\t${company.hiredDevelopersCount}`);
-    console.log(`Уволено разработчиков:\t${company.firedDevelopersCount}`);
+    console.log(`Completed projects:\t${company.finishedProjectsCount}`);
+    console.log(`Hired developers:\t${company.hiredDevelopersCount}`);
+    console.log(`Fired developers:\t${company.firedDevelopersCount}`);
     console.log(doubleHr);
   }
 
@@ -133,7 +133,7 @@ export class Company {
   }
 
   /**
-   * Добавить к проекты к нераспределённым
+   * Add projects to unallocated
    * @param {Project[]} projects
    */
   addUnallocated(projects) {
@@ -161,7 +161,7 @@ export class Company {
   }
 
   /**
-   * Передача проектов по отделам в работу
+   * transfer of projects by department to work
    * @param {Map} projects
    * @constructor
    */

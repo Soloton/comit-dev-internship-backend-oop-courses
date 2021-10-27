@@ -1,4 +1,4 @@
-import faker from "faker/locale/ru.js";
+import faker from "faker";
 import { BaseObject } from "./baseObject.js";
 
 export class Project extends BaseObject {
