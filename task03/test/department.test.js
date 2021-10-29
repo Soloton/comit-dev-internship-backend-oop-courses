@@ -28,7 +28,7 @@ describe("Department", () => {
       });
   }
 
-  function checkDistribution(developersCount, projectsCount, Class) {
+  function isAllProjectsAllocated(developersCount, projectsCount, Class) {
     const mobileDepartment = new Class();
     const mobileDepartment1 = new Class();
     mobileDepartment.hireDevelopers(developersCount);
@@ -50,7 +50,7 @@ describe("Department", () => {
     expect(allocateProject.size).to.be.equal(allocateProject1.size);
   }
 
-  function checkDistrubution(developersCount, projectsCount, Class) {
+  function isClearUnallocated(developersCount, projectsCount, Class) {
     const mobileDepartment = new Class();
     mobileDepartment.hireDevelopers(developersCount);
 
@@ -71,7 +71,7 @@ describe("Department", () => {
     gen.sPosInt,
     gen.sPosInt,
     (developersCount, projectsCount) => {
-      checkDistribution(developersCount, projectsCount, MobileDepartment);
+      isAllProjectsAllocated(developersCount, projectsCount, MobileDepartment);
     }
   );
   // noinspection JSUnresolvedVariable
@@ -81,7 +81,7 @@ describe("Department", () => {
     gen.sPosInt,
     gen.sPosInt,
     (developersCount, projectsCount) => {
-      checkDistribution(developersCount, projectsCount, WebDepartment);
+      isAllProjectsAllocated(developersCount, projectsCount, WebDepartment);
     }
   );
   // noinspection JSUnresolvedVariable
@@ -91,7 +91,7 @@ describe("Department", () => {
     gen.sPosInt,
     gen.sPosInt,
     (developersCount, projectsCount) => {
-      checkDistribution(developersCount, projectsCount, TestDepartment);
+      isAllProjectsAllocated(developersCount, projectsCount, TestDepartment);
     }
   );
 
@@ -102,7 +102,7 @@ describe("Department", () => {
     gen.sPosInt,
     gen.sPosInt,
     (developersCount, projectsCount) => {
-      checkDistrubution(developersCount, projectsCount, MobileDepartment);
+      isClearUnallocated(developersCount, projectsCount, MobileDepartment);
     }
   );
 
@@ -113,7 +113,7 @@ describe("Department", () => {
     gen.sPosInt,
     gen.sPosInt,
     (developersCount, projectsCount) => {
-      checkDistrubution(developersCount, projectsCount, WebDepartment);
+      isClearUnallocated(developersCount, projectsCount, WebDepartment);
     }
   );
 
@@ -124,7 +124,7 @@ describe("Department", () => {
     gen.sPosInt,
     gen.sPosInt,
     (developersCount, projectsCount) => {
-      checkDistrubution(developersCount, projectsCount, TestDepartment);
+      isClearUnallocated(developersCount, projectsCount, TestDepartment);
     }
   );
 
