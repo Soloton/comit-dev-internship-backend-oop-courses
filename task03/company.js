@@ -34,7 +34,7 @@ export class Company {
      * @param {string || undefined} caption
      */
     function printArray(array, caption = "") {
-      if (array && Array.isArray(array) && array.length > 0) {
+      if (array.length) {
         if (caption) {
           console.log(`\t${caption}`);
         }
@@ -192,11 +192,7 @@ export class Company {
       ...this.testDepartment.freeDevelopers,
     ];
 
-    if (
-      developersArray &&
-      Array.isArray(developersArray) &&
-      developersArray.length <= 0
-    ) {
+    if (!developersArray.length) {
       return;
     }
 
@@ -237,18 +233,19 @@ export class Company {
   hireDevelopers() {
     const unallocatedProjects = this.getUnallocatedProjects();
     unallocatedProjects.forEach((x) => {
-      if (x.nextStage === "development") {
-        if (x.isMobile) {
-          this.hiredDevelopersCount += this.webDepartment.hireDevelopers(
-            x.complexity
-          );
-        } else {
+      switch (x.nextStage) {
+        case "development":
+          if (x.isMobile) {
+            this.hiredDevelopersCount += this.webDepartment.hireDevelopers(
+              x.complexity
+            );
+          } else {
+            this.hiredDevelopersCount += this.mobileDepartment.hireDevelopers();
+          }
+          break;
+        case "testing":
           this.hiredDevelopersCount += this.mobileDepartment.hireDevelopers();
-        }
-      } else if (x.nextStage === "testing") {
-        this.hiredDevelopersCount += this.mobileDepartment.hireDevelopers();
-      } else {
-        throw new Error();
+          break;
       }
     });
   }

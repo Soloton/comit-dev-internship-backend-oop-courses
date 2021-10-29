@@ -83,12 +83,10 @@ export class Department {
         break;
       }
       if (this.isMeetConditions(project)) {
-        if (this.freeDevelopers && this.freeDevelopers instanceof Map) {
-          const developersToProject = this.beginWork(project);
-          if (developersToProject) {
-            result.set(project, NaN);
-            projects.delete(project);
-          }
+        const developersToProject = this.beginWork(project);
+        if (developersToProject) {
+          result.set(project, NaN);
+          projects.delete(project);
         }
       }
     }
