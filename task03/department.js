@@ -99,7 +99,7 @@ export class Department {
    * @returns {boolean}
    */
   isMeetConditions(project) {
-    return false;
+    throw new Error(`Method 'getDevelopersNorm()' must be implemented}.`);
   }
 
   tickDevelopers() {
