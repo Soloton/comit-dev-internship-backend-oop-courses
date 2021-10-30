@@ -228,23 +228,23 @@ export class Company {
   }
 
   /**
-   * Найм работников в отделы  на нераспределённые проекты
+   * Hiring employees in departments for unallocated projects
    */
-  hireDevelopers() {
+  hireTotalDevelopers() {
     const unallocatedProjects = this.getUnallocatedProjects();
-    unallocatedProjects.forEach((x) => {
-      switch (x.nextStage) {
-        case "development":
-          if (x.isMobile) {
-            this.hiredDevelopersCount += this.webDepartment.hireDevelopers(
-              x.complexity
-            );
-          } else {
+    unallocatedProjects.forEach((project) => {
+      switch (project.nextStage) {
+        case sharedEnumProjectStage.development:
+          if (project.isMobile) {
             this.hiredDevelopersCount += this.mobileDepartment.hireDevelopers();
+          } else {
+            this.hiredDevelopersCount += this.webDepartment.hireDevelopers(
+              project.complexity
+            );
           }
           break;
-        case "testing":
-          this.hiredDevelopersCount += this.mobileDepartment.hireDevelopers();
+        case sharedEnumProjectStage.testing:
+          this.hiredDevelopersCount += this.testDepartment.hireDevelopers();
           break;
       }
     });
