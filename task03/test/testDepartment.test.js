@@ -23,6 +23,7 @@ describe("TestDepartment", () => {
 
     expect(allocateProject.length)
       .to.be.lessThanOrEqual(count)
+      .to.be.greaterThan(0)
       .and.to.be.greaterThanOrEqual(1);
   });
 });

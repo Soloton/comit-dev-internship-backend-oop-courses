@@ -1,8 +1,9 @@
 import faker from "faker";
 import { BaseObject } from "./baseObject.js";
+import { sharedEnumProjectStage } from "./shared.js";
 
 export class Project extends BaseObject {
-  static autoIncrement = 0;
+  static autoIncrement;
 
   constructor(defaults = {}) {
     super();
@@ -21,13 +22,33 @@ export class Project extends BaseObject {
 
     this._complexity = defaults.complexity || Math.floor(Math.random() * 3) + 1;
 
+    this._daysOfDevelopmentCount = 0;
+
+    this._developerCount = 0;
+
     this._isMobile = defaults.hasOwnProperty("isMobile")
       ? defaults.isMobile
       : Math.random() < 0.5;
 
     this._nextStage = defaults.hasOwnProperty("nextStage")
       ? defaults.nextStage
-      : "development";
+      : sharedEnumProjectStage.development;
+  }
+
+  get developerCount() {
+    return this._developerCount;
+  }
+
+  set developerCount(value) {
+    this._developerCount = value;
+  }
+
+  get daysOfDevelopmentCount() {
+    return this._daysOfDevelopmentCount;
+  }
+
+  set daysOfDevelopmentCount(value) {
+    this._daysOfDevelopmentCount = value;
   }
 
   get complexity() {
@@ -60,11 +81,11 @@ export class Project extends BaseObject {
 
   setNextStage() {
     switch (this.nextStage) {
-      case "development":
-        this._nextStage = "testing";
+      case sharedEnumProjectStage.development:
+        this._nextStage = sharedEnumProjectStage.testing;
         break;
-      case "testing":
-        this._nextStage = "done";
+      case sharedEnumProjectStage.testing:
+        this._nextStage = sharedEnumProjectStage.done;
         break;
     }
   }

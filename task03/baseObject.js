@@ -1,17 +1,17 @@
 export class BaseObject {
   /**
    *
-   * @param ClassName
+   * @param Class
    * @returns {number}
    */
-  static getAutoIncrement(ClassName) {
-    if (ClassName && ClassName.hasOwnProperty("autoIncrement")) {
-      return ++ClassName.autoIncrement;
+  static getAutoIncrement(Class) {
+    if (Class && Class.hasOwnProperty("autoIncrement")) {
+      return ++Class.autoIncrement;
     }
   }
 
   /**
-   * Создаёт массив из count объектов класса Class
+   * Creates an array of count objects of class Class
    * @param count
    * @param Class
    * @returns {Developer[]||Project[]}

@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import { check, gen, install } from "mocha-testcheck";
 import { Project } from "../project.js";
+import { sharedEnumProjectStage } from "../shared.js";
 
 install();
 
@@ -42,7 +43,9 @@ describe("Project", () => {
       .that.to.be.lessThanOrEqual(3)
       .and.to.be.greaterThanOrEqual(1);
     expect(project.isMobile).to.be.a("boolean");
-    expect(project.nextStage).to.be.a("string").that.to.be.equal("development");
+    expect(project.nextStage)
+      .to.be.a("string")
+      .that.to.be.equal(sharedEnumProjectStage.development);
   });
 
   check.it("next stage", () => {
@@ -50,10 +53,10 @@ describe("Project", () => {
 
     project.setNextStage();
 
-    expect(project.nextStage).to.be.equal("testing");
+    expect(project.nextStage).to.be.equal(sharedEnumProjectStage.testing);
 
     project.setNextStage();
 
-    expect(project.nextStage).to.be.equal("done");
+    expect(project.nextStage).to.be.equal(sharedEnumProjectStage.done);
   });
 });

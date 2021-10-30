@@ -10,11 +10,19 @@ export class Department {
   }
 
   /**
-   * Список свободных разработчиков
+   * List of free developers
    * @returns {Map}
    */
   get freeDevelopers() {
     return this._freeDevelopers;
+  }
+
+  /**
+   * List of free developers
+   * @returns {Array}
+   */
+  get freeDevelopersArray() {
+    return Array.from(this._freeDevelopers, ([, value]) => value);
   }
 
   /**
@@ -23,28 +31,37 @@ export class Department {
    * @return {undefined || Developer[]}
    */
   beginWork(project) {
+    if (!this.isMeetConditions(project)) {
+      return;
+    }
+
     const mapDevelopers = this.freeDevelopers;
     if (
-      !(project && project instanceof Project) ||
-      !(mapDevelopers && mapDevelopers instanceof Map && mapDevelopers.size > 0)
+      !(project instanceof Project) ||
+      !(mapDevelopers instanceof Map && mapDevelopers.size > 0)
     ) {
       return;
     }
 
     let count = Math.min(
       mapDevelopers.size,
-      this.getDevelopersNorm(project.complexity)
+      this.getDevelopersDefaultCount(project.complexity)
     );
 
     const result = [];
 
-    for (const developer of mapDevelopers.keys()) {
-      if (developer && developer instanceof Developer) {
+    for (const developerRecord of mapDevelopers.values()) {
+      if (!developerRecord.hasOwnProperty("developer")) {
+        continue;
+      }
+      const developer = developerRecord.developer;
+      if (developer instanceof Developer) {
         if (count-- <= 0) {
           return result;
         }
         developer.projectsCount++;
         developer.daysWithoutWork = 0;
+        project.developerCount++;
         result.push(developer);
       }
     }
@@ -53,15 +70,20 @@ export class Department {
   }
 
   // noinspection JSUnusedLocalSymbols
-  getDevelopersNorm(complexity) {
-    throw new Error(`Method 'getDevelopersNorm()' must be implemented}.`);
+  getDevelopersDefaultCount() {
+    throw new Error(
+      "Method 'getDevelopersDefaultCount()' must be implemented}."
+    );
   }
 
   hireDevelopers(count = 1) {
     const generateDevelopers = Developer.generate(count);
 
-    generateDevelopers.forEach((x) => {
-      this.freeDevelopers.set(x, { department: this });
+    generateDevelopers.forEach((developer) => {
+      this.freeDevelopers.set(developer.id, {
+        developer: developer,
+        department: this,
+      });
     });
 
     return count;
@@ -73,43 +95,56 @@ export class Department {
    * @returns {Map}
    */
   allocateProject(projects) {
-    if (!(projects && projects instanceof Map)) {
+    if (!(projects instanceof Map)) {
       return new Map();
     }
     const result = new Map();
 
-    for (const project of projects.keys()) {
-      if (!(project instanceof Project)) {
-        break;
-      }
-      if (this.isMeetConditions(project)) {
+    for (const projectRecord of projects) {
+      if (projectRecord.length > 1) {
+        const id = projectRecord[0];
+        const project = projectRecord[1];
+        if (!(project instanceof Project)) {
+          continue;
+        }
+
         const developersToProject = this.beginWork(project);
         if (developersToProject) {
-          result.set(project, NaN);
-          projects.delete(project);
+          result.set(id, project);
         }
       }
     }
+
+    if (result.size > 0) {
+      for (const projectId of result.keys()) {
+        projects.delete(projectId);
+      }
+    }
+
     return result;
   }
 
   /**
-   * Проект соответствует условиям отдела
+   * The project meets the conditions of the department
    * @param {Project} project
    * @returns {boolean}
    */
   isMeetConditions(project) {
-    throw new Error(`Method 'getDevelopersNorm()' must be implemented}.`);
+    throw new Error("Method 'isMeetConditions()' must be implemented}.");
   }
 
   tickDevelopers() {
-    if (!(this.freeDevelopers && this.freeDevelopers instanceof Map)) {
+    if (!(this.freeDevelopers instanceof Map)) {
       return;
     }
-    for (let k of this.freeDevelopers.keys()) {
-      if (k && k instanceof Developer) {
-        k.daysWithoutWork++;
-        k.projectsCount = 0;
+    for (let developerRecord of this.freeDevelopers.values()) {
+      if (!developerRecord.hasOwnProperty("developer")) {
+        continue;
+      }
+      const developer = developerRecord.developer;
+      if (developer instanceof Developer) {
+        developer.daysWithoutWork++;
+        developer.projectsCount = 0;
       }
     }
   }

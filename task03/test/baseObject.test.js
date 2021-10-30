@@ -26,8 +26,8 @@ describe("BaseObject", () => {
     const generate = Class.generate(count);
 
     const set = new Set(
-      generate.map((x) => {
-        return x.id;
+      generate.map((element) => {
+        return element.id;
       })
     );
 
@@ -38,8 +38,8 @@ describe("BaseObject", () => {
   check.it(
     "the generator returns arrays of unique objects",
     gen.sPosInt,
-    gen.boolean.then((x) => {
-      if (x) {
+    gen.boolean.then((boolRandom) => {
+      if (boolRandom) {
         return Project;
       }
       return Developer;
@@ -53,8 +53,8 @@ describe("BaseObject", () => {
   check.it(
     "the generator returns arrays of objects of the required class",
     gen.sPosInt,
-    gen.boolean.then((x) => {
-      if (x) {
+    gen.boolean.then((boolRandom) => {
+      if (boolRandom) {
         return Project;
       }
       return Developer;
