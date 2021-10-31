@@ -3,7 +3,7 @@ import { BaseObject } from "./baseObject.js";
 import { sharedEnumProjectStage } from "./shared.js";
 
 export class Project extends BaseObject {
-  static autoIncrement;
+  static autoIncrement = 0;
 
   constructor(defaults = {}) {
     super();
