@@ -1,10 +1,10 @@
-import { WebDepartment } from "./webDepartment.js";
-import { MobileDepartment } from "./mobileDepartment.js";
-import { TestDepartment } from "./testDepartment.js";
-import { Project } from "./project.js";
-import { Developer } from "./developer.js";
-import { Department } from "./department.js";
-import { sharedEnumProjectStage } from "./shared.js";
+import {WebDepartment} from "./webDepartment.js";
+import {MobileDepartment} from "./mobileDepartment.js";
+import {TestDepartment} from "./testDepartment.js";
+import {Project} from "./project.js";
+import {Developer} from "./developer.js";
+import {Department} from "./department.js";
+import {sharedEnumProjectStage} from "./shared.js";
 
 export class Company {
   constructor() {
@@ -41,13 +41,15 @@ export class Company {
           console.log(`\t${caption}`);
         }
         array.forEach((project, j) =>
-          console.log(
-            `\t${j + 1} ${project.title} [${project.isMobile ? "Mob" : "Web"} ${
-              project.nextStage
-            } ${project.daysOfDevelopmentCount}/${project.complexity}, devs:${
-              project.developerCount
-            }]`
-          )
+            console.log(
+                `\t${j + 1} ${project.title} [${project.isMobile
+                    ? "Mob"
+                    : "Web"} ${
+                    project.nextStage
+                } ${project.daysOfDevelopmentCount}/${project.complexity}, devs:${
+                    project.developerCount
+                }]`
+            )
         );
         console.log(`\t${hr}`);
       }
@@ -59,7 +61,14 @@ export class Company {
       console.log(doubleHr);
 
       // # Начало дня #
-      //
+
+      // # Отделы делают работу, переводя проекты в следующий *статус*
+      //   в зависимости от требований проекта и работающих над ним программистов.
+      //   В результате этого могут высвободиться разработчики в том или ином
+      //   отделе (висят в отделе).
+      console.log("Ticking during the day on projects and developers");
+      company.tickDay();
+
       // # *Директор* берёт нераспределённые проекты.
       //   - у директора в компании есть перечень в статусе "Вчерашний" ("Ожидающий")
       console.log("GOOD MORNING!");
@@ -81,13 +90,6 @@ export class Company {
       printArray(company.getUnallocatedProjects(), "Unallocated");
       printArray(company.getProjectsInWorkArray(), "In work after allocate");
 
-      // # Отделы делают работу, переводя проекты в следующий *статус*
-      //   в зависимости от требований проекта и работающих над ним программистов.
-      //   В результате этого могут высвободиться разработчики в том или ином
-      //   отделе (висят в отделе).
-      console.log("Ticking during the day on projects and developers");
-      company.tickDay();
-
       // # Директор берёт новые проекты (от 0 до 4).
       console.log("Get daily new projects");
       const newProjects = company.getNewProjects();
@@ -101,12 +103,12 @@ export class Company {
       company.addUnallocated(newProjects);
       company.allocateUnallocatedProjects();
       printArray(
-        company.getUnallocatedProjects(),
-        "Yesterday's after allocate new projects"
+          company.getUnallocatedProjects(),
+          "Yesterday's after allocate new projects"
       );
       printArray(
-        company.getProjectsInWorkArray(),
-        "In work after allocate new projects"
+          company.getProjectsInWorkArray(),
+          "In work after allocate new projects"
       );
 
       // # Директор берёт самого непытного программиста из тех, кто не работает
@@ -116,7 +118,7 @@ export class Company {
       const fireLooser = company.fireIdleDeveloper();
       if (fireLooser) {
         console.log(
-          `${fireLooser.title} has been idle for ${fireLooser.daysWithoutWork} days,` +
+            `${fireLooser.title} has been idle for ${fireLooser.daysWithoutWork} days,` +
             ` participated in ${fireLooser.projectsCount} projects`
         );
       }
@@ -130,10 +132,10 @@ export class Company {
 
     console.log(doubleHr);
     console.log(
-      `Unallocated projects:\t${company.getUnallocatedProjects().length}`
+        `Unallocated projects:\t${company.getUnallocatedProjects().length}`
     );
     console.log(
-      `In work projects:\t${company.getProjectsInWorkArray().length}`
+        `In work projects:\t${company.getProjectsInWorkArray().length}`
     );
     console.log(`Completed projects:\t${company.finishedProjectsCount}`);
     console.log(`Hired developers:\t${company.hiredDevelopersCount}`);
@@ -183,7 +185,7 @@ export class Company {
    */
   allocateUnallocatedProjects() {
     const mobile = this.mobileDepartment.allocateProject(
-      this._unallocatedProjects
+        this._unallocatedProjects
     );
     const web = this.webDepartment.allocateProject(this._unallocatedProjects);
     const test = this.testDepartment.allocateProject(this._unallocatedProjects);
@@ -199,8 +201,8 @@ export class Company {
   _filterIdleDeveloper(developerRecord) {
     if (developerRecord.hasOwnProperty("developer")) {
       return (
-        developerRecord.developer instanceof Developer &&
-        developerRecord.developer.daysWithoutWork > 3
+          developerRecord.developer instanceof Developer &&
+          developerRecord.developer.daysWithoutWork > 3
       );
     }
     return false;
@@ -208,12 +210,12 @@ export class Company {
 
   _sortDescByDeveloperProjectsCount(a, b) {
     if (
-      !(
-        a.hasOwnProperty("developer") ||
-        a.developer instanceof Department ||
-        b.hasOwnProperty("developer") ||
-        b.developer instanceof Department
-      )
+        !(
+            a.hasOwnProperty("developer") ||
+            a.developer instanceof Department ||
+            b.hasOwnProperty("developer") ||
+            b.developer instanceof Department
+        )
     ) {
       return;
     }
@@ -235,7 +237,7 @@ export class Company {
     }
 
     let filteredDeveloperRecordsArray = developerRecordsArray.filter(
-      this._filterIdleDeveloper
+        this._filterIdleDeveloper
     );
 
     if (!filteredDeveloperRecordsArray.length) {
@@ -243,9 +245,9 @@ export class Company {
     }
 
     const sortedFilteredDeveloperRecordsArray =
-      filteredDeveloperRecordsArray.sort(
-        this._sortDescByDeveloperProjectsCount
-      );
+        filteredDeveloperRecordsArray.sort(
+            this._sortDescByDeveloperProjectsCount
+        );
 
     if (!sortedFilteredDeveloperRecordsArray.length) {
       return;
@@ -278,7 +280,7 @@ export class Company {
             this.hiredDevelopersCount += this.mobileDepartment.hireDevelopers();
           } else {
             this.hiredDevelopersCount += this.webDepartment.hireDevelopers(
-              project.complexity
+                project.complexity
             );
           }
           break;
@@ -302,7 +304,7 @@ export class Company {
 
   tickProjects() {
     if (
-      !(this._projectsInWork instanceof Map && this._projectsInWork.size > 0)
+        !(this._projectsInWork instanceof Map && this._projectsInWork.size > 0)
     ) {
       return;
     }
