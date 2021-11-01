@@ -1,13 +1,13 @@
 import faker from "faker";
-import { AbstractAutoincrement } from "./abstractAutoincrement.js";
 import { sharedEnumProjectStage } from "./shared.js";
 
-export class Project extends AbstractAutoincrement {
-  static autoIncrement = 0;
-
-  constructor(defaults = {}) {
-    super();
-
+export class Project {
+  /**
+   *
+   * @param id {number | !isNull}
+   * @param options
+   */
+  constructor(id, options = {}) {
     function upCaseFirst(str) {
       if (!str) {
         return str;
@@ -15,23 +15,23 @@ export class Project extends AbstractAutoincrement {
       return str[0].toUpperCase() + str.slice(1);
     }
 
-    this._id = defaults.id || AbstractAutoincrement.getAutoIncrement(Project);
+    this._id = id;
 
     // noinspection JSUnresolvedVariable,JSUnresolvedFunction
-    this._title = upCaseFirst(defaults.title || faker.git.commitMessage());
+    this._title = upCaseFirst(options.title || faker.git.commitMessage());
 
-    this._complexity = defaults.complexity || Math.floor(Math.random() * 3) + 1;
+    this._complexity = options.complexity || Math.floor(Math.random() * 3) + 1;
 
     this._daysOfDevelopmentCount = 0;
 
     this._developerCount = 0;
 
-    this._isMobile = defaults.hasOwnProperty("isMobile")
-      ? defaults.isMobile
+    this._isMobile = options.hasOwnProperty("isMobile")
+      ? options.isMobile
       : Math.random() < 0.5;
 
-    this._nextStage = defaults.hasOwnProperty("nextStage")
-      ? defaults.nextStage
+    this._nextStage = options.hasOwnProperty("nextStage")
+      ? options.nextStage
       : sharedEnumProjectStage.development;
   }
 
@@ -69,14 +69,6 @@ export class Project extends AbstractAutoincrement {
 
   get isMobile() {
     return !!this._isMobile;
-  }
-
-  static getAutoIncrement() {
-    return ++Project.autoIncrement;
-  }
-
-  static generate(count, Class = Project) {
-    return AbstractAutoincrement.generate(count, Class);
   }
 
   setNextStage() {

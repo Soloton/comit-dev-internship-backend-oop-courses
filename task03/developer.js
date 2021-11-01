@@ -1,16 +1,17 @@
 import faker from "faker";
-import { AbstractAutoincrement } from "./abstractAutoincrement.js";
 
-export class Developer extends AbstractAutoincrement {
-  static autoIncrement = 0;
-
-  constructor(defaults = {}) {
-    super();
-    this.id = defaults.id || AbstractAutoincrement.getAutoIncrement(Developer);
+export class Developer {
+  /**
+   *
+   * @param id {number | !isNull}
+   * @param options
+   */
+  constructor(id, options = {}) {
+    this.id = id;
     // noinspection JSUnresolvedVariable,JSCheckFunctionSignatures
-    this._title = defaults.title || faker.name.findName();
-    this._projectsCount = defaults.projectsCount || 0;
-    this._daysWithoutWork = defaults.daysWithoutWorkCount || 0;
+    this._title = options.title || faker.name.findName();
+    this._projectsCount = options.projectsCount || 0;
+    this._daysWithoutWork = options.daysWithoutWorkCount || 0;
   }
 
   get daysWithoutWork() {
@@ -31,9 +32,5 @@ export class Developer extends AbstractAutoincrement {
 
   get title() {
     return `${this._title} (#${this.id})`;
-  }
-
-  static generate(count, Class = Developer) {
-    return AbstractAutoincrement.generate(count, Class);
   }
 }

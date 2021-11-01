@@ -1,6 +1,8 @@
 import { expect } from "chai";
 import { check, gen, install } from "mocha-testcheck";
 import { Developer } from "../developer.js";
+import { Factory } from "../factory.js";
+import { sharedAutoincrementType } from "../shared.js";
 
 install();
 
@@ -13,8 +15,7 @@ describe("Developer", () => {
     gen.sPosInt,
     gen.sPosInt,
     (title, id, projectsCount, daysWithoutWork) => {
-      const developer = new Developer({
-        id: id,
+      const developer = new Developer(id, {
         title: title,
         projectsCount: projectsCount,
         daysWithoutWorkCount: daysWithoutWork,
@@ -37,7 +38,8 @@ describe("Developer", () => {
   );
 
   check.it("the new developer is valid", () => {
-    const developer = new Developer();
+    const factory = new Factory();
+    const developer = factory.createOne(sharedAutoincrementType.developer);
     expect(developer.id).to.be.a("number").that.to.be.greaterThanOrEqual(1);
     expect(developer.title).to.be.a("string").that.to.be.contain(developer.id);
 
