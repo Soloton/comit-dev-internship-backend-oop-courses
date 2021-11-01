@@ -1,4 +1,5 @@
 export class BaseObject {
+export class AbstractAutoincrement {
   /**
    *
    * @param Class
@@ -20,7 +21,7 @@ export class BaseObject {
     const result = [];
 
     if (
-      Class.constructor.name !== "BaseObject" &&
+      Class.constructor.name !== "AbstractAutoincrement" &&
       Number.isInteger(count) &&
       Class
     ) {

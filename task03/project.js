@@ -1,8 +1,8 @@
 import faker from "faker";
-import { BaseObject } from "./baseObject.js";
+import { AbstractAutoincrement } from "./abstractAutoincrement.js";
 import { sharedEnumProjectStage } from "./shared.js";
 
-export class Project extends BaseObject {
+export class Project extends AbstractAutoincrement {
   static autoIncrement = 0;
 
   constructor(defaults = {}) {
@@ -15,7 +15,7 @@ export class Project extends BaseObject {
       return str[0].toUpperCase() + str.slice(1);
     }
 
-    this._id = defaults.id || BaseObject.getAutoIncrement(Project);
+    this._id = defaults.id || AbstractAutoincrement.getAutoIncrement(Project);
 
     // noinspection JSUnresolvedVariable,JSUnresolvedFunction
     this._title = upCaseFirst(defaults.title || faker.git.commitMessage());
@@ -76,7 +76,7 @@ export class Project extends BaseObject {
   }
 
   static generate(count, Class = Project) {
-    return BaseObject.generate(count, Class);
+    return AbstractAutoincrement.generate(count, Class);
   }
 
   setNextStage() {

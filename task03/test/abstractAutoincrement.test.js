@@ -5,7 +5,7 @@ import { Developer } from "../developer.js";
 
 install();
 
-describe("BaseObject", () => {
+describe("AbstractAutoincrement", () => {
   function isClass(count, Class) {
     Class.autoIncrement = count;
 

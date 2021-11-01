@@ -1,12 +1,12 @@
 import faker from "faker";
-import { BaseObject } from "./baseObject.js";
+import { AbstractAutoincrement } from "./abstractAutoincrement.js";
 
-export class Developer extends BaseObject {
+export class Developer extends AbstractAutoincrement {
   static autoIncrement = 0;
 
   constructor(defaults = {}) {
     super();
-    this.id = defaults.id || BaseObject.getAutoIncrement(Developer);
+    this.id = defaults.id || AbstractAutoincrement.getAutoIncrement(Developer);
     // noinspection JSUnresolvedVariable,JSCheckFunctionSignatures
     this._title = defaults.title || faker.name.findName();
     this._projectsCount = defaults.projectsCount || 0;
@@ -34,6 +34,6 @@ export class Developer extends BaseObject {
   }
 
   static generate(count, Class = Developer) {
-    return BaseObject.generate(count, Class);
+    return AbstractAutoincrement.generate(count, Class);
   }
 }
