@@ -4,7 +4,9 @@
     "description": "ООП",
     "type": "module",
     "scripts": {
-        "task02": "node ./task02/tableGenerator.js"
+        "task02": "node ./task02/tableGenerator.js",
+        "task03 tests": "mocha ./task03/test/*.test.js --parallel",
+        "task03 run": "node ./task03/app.js 100"
     },
     "repository": {
         "type": "git",
@@ -18,11 +20,12 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "csv-writer": "^1.6.0"
+        "csv-writer": "^1.6.0",
+        "faker": "^5.5.3"
     },
     "devDependencies": {
         "chai": "^4.3.4",
-        "mocha": "^9.1.2",
+        "mocha": "^9.1.3",
         "mocha-testcheck": "^1.0.0-rc.0",
         "prettier": "~2.4.1"
     }
