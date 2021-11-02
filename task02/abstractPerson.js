@@ -1,27 +1,25 @@
 import { Goods } from "./goods.js";
 
-export class AbstractPerson {
-  _goods = new Goods(0);
-
-  constructor() {
-    if (this.constructor === AbstractPerson) {
-      throw new TypeError("Can not construct abstract class.");
-    }
+export function AbstractPerson() {
+  if (this.constructor === AbstractPerson) {
+    throw new TypeError("Can not construct abstract class.");
   }
 
-  setGoodsCount(goodsCount) {
+  this._goods = new Goods(0);
+
+  this.setGoodsCount = function (goodsCount) {
     this._goods.setCount(goodsCount);
-  }
+  };
 
-  increaseGoodsCount(goodsCount) {
+  this.increaseGoodsCount = function (goodsCount) {
     return this._goods.increaseCount(goodsCount);
-  }
+  };
 
-  decreaseGoodsCount(goodsCount) {
+  this.decreaseGoodsCount = function (goodsCount) {
     return this._goods.decreaseCount(goodsCount);
-  }
+  };
 
-  getGoodsCount() {
+  this.getGoodsCount = function () {
     return this._goods.getCount();
-  }
+  };
 }
