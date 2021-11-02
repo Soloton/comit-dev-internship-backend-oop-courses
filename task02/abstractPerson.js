@@ -23,3 +23,4 @@ AbstractPerson.prototype.decreaseGoodsCount = function (goodsCount) {
 AbstractPerson.prototype.getGoodsCount = function () {
   return this._goods.getCount();
 };
+
