@@ -1,28 +1,26 @@
-export class Goods {
-  _count = 0;
+"use strict";
 
-  constructor(count) {
-    this.setCount(count);
-  }
-
-  setCount(count) {
+export function Goods(goodsCount) {
+  this.setCount = function (count) {
     if (count < 0) {
       throw Error(
         "It is impossible to pick up less goods than you have in stock"
       );
     }
     this._count = count;
-  }
+  };
 
-  getCount() {
+  this.getCount = function () {
     return this._count;
-  }
+  };
 
-  increaseCount(count) {
+  this.increaseCount = function (count) {
     this.setCount(this._count + count);
-  }
+  };
 
-  decreaseCount(count) {
+  this.decreaseCount = function (count) {
     this.setCount(this._count - count);
-  }
+  };
+
+  this.setCount(goodsCount);
 }
