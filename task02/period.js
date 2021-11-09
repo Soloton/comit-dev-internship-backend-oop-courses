@@ -1,13 +1,13 @@
-export class Period {
-  _data;
+"use strict";
 
-  constructor(height) {
-    this._data = new Array(height).fill(0);
-  }
+export function Period(height) {
+  this._data = new Array(height).fill(0);
 
-  getSum(value) {
+  this.getSum = function (value) {
     this._data.shift();
     this._data.push(value);
-    return this._data.reduce((sum, a) => sum + a, 0);
-  }
+    return this._data.reduce(function (sum, a) {
+      return sum + a;
+    }, 0);
+  };
 }
