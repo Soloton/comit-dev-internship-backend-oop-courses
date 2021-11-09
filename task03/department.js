@@ -1,5 +1,7 @@
 import { Project } from "./project.js";
 import { Developer } from "./developer.js";
+import { Factory } from "./factory.js";
+import { sharedAutoincrementType } from "./shared.js";
 
 export class Department {
   constructor() {
@@ -77,7 +79,11 @@ export class Department {
   }
 
   hireDevelopers(count = 1) {
-    const generateDevelopers = Developer.generate(count);
+    const factory = new Factory();
+    const generateDevelopers = factory.createMany(
+      count,
+      sharedAutoincrementType.developer
+    );
 
     generateDevelopers.forEach((developer) => {
       this.freeDevelopers.set(developer.id, {

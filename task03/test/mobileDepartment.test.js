@@ -1,14 +1,18 @@
 import { expect } from "chai";
 import { check, gen, install } from "mocha-testcheck";
 import { MobileDepartment } from "../mobileDepartment.js";
-import { Project } from "../project.js";
+import { Factory } from "../factory.js";
+import { sharedAutoincrementType } from "../shared.js";
 
 install();
 
 describe("MobileDepartment", () => {
   check.it("projects are suitable for development", gen.boolean, (isMobile) => {
     const webDepartment = new MobileDepartment();
-    const project = new Project({ isMobile: isMobile });
+    const factory = new Factory();
+    const project = factory.createOne(sharedAutoincrementType.project, {
+      isMobile: isMobile,
+    });
     expect(webDepartment.isMeetConditions(project))
       .to.be.a("boolean")
       .that.to.be.equal(isMobile);
@@ -21,7 +25,10 @@ describe("MobileDepartment", () => {
     (count) => {
       const mobileDepartment = new MobileDepartment();
       mobileDepartment.hireDevelopers(count);
-      const project = new Project({ isMobile: true });
+      const factory = new Factory();
+      const project = factory.createOne(sharedAutoincrementType.project, {
+        isMobile: true,
+      });
 
       const allocateProject = mobileDepartment.beginWork(project);
 
@@ -38,7 +45,10 @@ describe("MobileDepartment", () => {
     (count) => {
       const mobileDepartment = new MobileDepartment();
       mobileDepartment.hireDevelopers(count);
-      const project = new Project({ isMobile: false });
+      const factory = new Factory();
+      const project = factory.createOne(sharedAutoincrementType.project, {
+        isMobile: false,
+      });
 
       const allocateProject = mobileDepartment.beginWork(project);
 

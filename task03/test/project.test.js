@@ -1,7 +1,8 @@
 import { expect } from "chai";
 import { check, gen, install } from "mocha-testcheck";
 import { Project } from "../project.js";
-import { sharedEnumProjectStage } from "../shared.js";
+import { sharedAutoincrementType, sharedEnumProjectStage } from "../shared.js";
+import { Factory } from "../factory.js";
 
 install();
 
@@ -15,8 +16,7 @@ describe("Project", () => {
     gen.boolean,
     gen.asciiString,
     (title, id, complexity, isMobile, nextStage) => {
-      const project = new Project({
-        id: id,
+      const project = new Project(id, {
         title: title,
         complexity: complexity,
         isMobile: isMobile,
@@ -34,7 +34,8 @@ describe("Project", () => {
   );
 
   check.it("the new project is valid", () => {
-    const project = new Project();
+    const factory = new Factory();
+    const project = factory.createOne(sharedAutoincrementType.project);
     expect(project.title).to.be.a("string").that.to.be.contain(project.id);
     expect(project.id).to.be.a("number").that.to.be.greaterThanOrEqual(1);
 
@@ -49,7 +50,8 @@ describe("Project", () => {
   });
 
   check.it("next stage", () => {
-    const project = new Project();
+    const factory = new Factory();
+    const project = factory.createOne(sharedAutoincrementType.project);
 
     project.setNextStage();
 

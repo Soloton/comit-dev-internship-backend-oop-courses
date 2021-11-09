@@ -4,7 +4,8 @@ import { WebDepartment } from "../webDepartment.js";
 import { MobileDepartment } from "../mobileDepartment.js";
 import { TestDepartment } from "../testDepartment.js";
 import { Department } from "../department.js";
-import { Project } from "../project.js";
+import { Factory } from "../factory.js";
+import { sharedAutoincrementType } from "../shared.js";
 
 install();
 
@@ -32,6 +33,7 @@ describe("Department", () => {
   }
 
   function isAllProjectsAllocated(developersCount, projectsCount, Class) {
+    const factory = new Factory();
     const department = new Class();
     const otherDepartment = new Class();
     department.hireDevelopers(developersCount);
@@ -40,7 +42,7 @@ describe("Department", () => {
     const projects = new Map();
     let allocateProject1 = new Map();
     for (let i = 0; i < projectsCount; i++) {
-      let project1 = new Project();
+      let project1 = factory.createOne(sharedAutoincrementType.developer);
       projects.set(project1.id, project1);
       let projectsMap = new Map();
       projectsMap.set(project1.id, project1);
@@ -58,8 +60,9 @@ describe("Department", () => {
     department.hireDevelopers(developersCount);
 
     const projects = new Map();
+    const factory = new Factory();
     for (let i = 0; i < projectsCount; i++) {
-      const project = new Project();
+      const project = factory.createOne(sharedAutoincrementType.project);
       projects.set(project.id, project);
     }
 
